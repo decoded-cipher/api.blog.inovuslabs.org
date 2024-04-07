@@ -57,11 +57,29 @@ router.get('/', async (req, res) => {
             });
         });
 
+
     res.status(200).json({
         status: 200,
         message: 'Posts retrieved successfully',
         data: {
-            posts: posts,
+            posts: [
+                ...posts.map(post => ({
+                    id: post.id,
+                    uuid: post.uuid,
+                    title: post.title,
+                    slug: post.slug,
+                    feature_image: post.feature_image,
+                    featured: post.featured,
+                    type: post.type,
+                    status: post.status,
+                    visibility: post.visibility,
+                    created_at: post.created_at,
+                    updated_at: post.updated_at,
+                    published_at: post.published_at,
+                    custom_excerpt: post.custom_excerpt
+
+                }))
+            ],
             meta: {
                 page: page,
                 limit: limit,
