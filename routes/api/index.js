@@ -12,7 +12,7 @@ const postsMetaRouter = require('./posts_meta');
 
 
 router.use('/posts', postsRouter);
-router.use('/users', usersRouter);
+router.use('/authors', usersRouter);
 router.use('/tags', tagsRouter);
 router.use('/posts_tags', postsTagsRouter);
 router.use('/posts_authors', postsAuthorsRouter);

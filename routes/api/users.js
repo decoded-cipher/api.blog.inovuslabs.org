@@ -3,20 +3,27 @@ const express = require('express');
 const router = express.Router();
 
 const Users = require('../../models/users');
+const Posts = require('../../models/posts');
+const Tags = require('../../models/tags');
+const PostsTags = require('../../models/posts_tags');
+const PostsAuthors = require('../../models/posts_authors');
+const PostsMeta = require('../../models/posts_meta');
+
 const verifyToken = require('../../middleware/authentication');
+const e = require('express');
 
 
 
 /**
- * @route   GET /api/v1/roles
- * @desc    Get all roles with pagination
+ * @route   GET /api/v1/users
+ * @desc    Get all users with pagination
  * @access  Public
  * @params  page, limit, search
  * @return  message, data
  * @error   400, { error }
  * @status  200, 400
  * 
- * @example /api/v1/roles?page=1&limit=10&search=role
+ * @example /api/v1/users?page=1&limit=10&search=role
 **/
 
 router.get('/', async (req, res) => {
@@ -64,6 +71,99 @@ router.get('/', async (req, res) => {
             }
         }
     });
+
+});
+
+
+
+
+
+/**
+ * @route   GET /api/v1/author/:slug
+ * @desc    Get author posts by slug
+ * @access  Public
+ * @params  slug
+ * @return  message, data
+ * @error   400, { error }
+ * @status  200, 400
+ * 
+ * @example /api/v1/author/arjun
+**/
+
+router.get('/:slug', async (req, res) => {
+
+    let slug = req.params.slug;
+
+    await Users.findOne({ slug: slug })
+        .then(async user => {
+            
+            await PostsAuthors.find({ author_id: user.id })
+                .then(async postsAuthors => {
+                    
+                    let posts = [];
+                    for (let i = 0; i < postsAuthors.length; i++) {
+                        let post = await Posts.findOne({ id: postsAuthors[i].post_id });
+                        posts.push(post);
+                    }
+
+                    res.status(200).json({
+                        status: 200,
+                        message: 'Posts retrieved successfully',
+                        data: {
+                            user: {
+                                id: user.id,
+                                name: user.name,
+                                slug: user.slug,
+                                email: user.email,
+                                profile_image: user.profile_image,
+                                cover_image: user.cover_image,
+                                bio: user.bio,
+                                website: user.website,
+                                location: user.location,
+                                facebook: user.facebook,
+                                twitter: user.twitter
+                            },
+                            posts: {
+                                total: posts.length,
+                                posts: [
+                                    ...posts.map(post => ({
+                                        id: post.id,
+                                        uuid: post.uuid,
+                                        title: post.title,
+                                        slug: post.slug,
+                                        feature_image: post.feature_image,
+                                        featured: post.featured,
+                                        type: post.type,
+                                        status: post.status,
+                                        visibility: post.visibility,
+                                        created_at: post.created_at,
+                                        updated_at: post.updated_at,
+                                        published_at: post.published_at,
+                                        custom_excerpt: post.custom_excerpt
+                    
+                                    }))
+                                ]
+                            }
+                        }
+                    });
+
+                })
+                .catch(err => {
+                    res.status(400).json({
+                        status: 400,
+                        message: 'Error retrieving posts',
+                        error: err
+                    });
+                });
+
+        })
+        .catch(err => {
+            res.status(400).json({
+                status: 400,
+                message: 'Error retrieving user',
+                error: err
+            });
+        });
 
 });
 
