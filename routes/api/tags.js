@@ -3,6 +3,13 @@ const express = require('express');
 const router = express.Router();
 
 const Tags = require('../../models/tags');
+const Posts = require('../../models/posts');
+const Users = require('../../models/users');
+const PostsTags = require('../../models/posts_tags');
+const PostsAuthors = require('../../models/posts_authors');
+const PostsMeta = require('../../models/posts_meta');
+
+
 const verifyToken = require('../../middleware/authentication');
 
 
@@ -64,6 +71,88 @@ router.get('/', async (req, res) => {
             }
         }
     });
+
+});
+
+
+
+
+
+/**
+ * @route   GET /api/v1/tags/:slug
+ * @desc    Get post by tag slug
+ * @access  Public
+ * @params  slug
+ * @return  message, data
+ * @error   400, { error }
+ * @status  200, 400
+ * 
+ * @example /api/v1/tags/freethinking
+ **/
+
+router.get('/:slug', async (req, res) => {
+
+    let slug = req.params.slug;
+
+    await Tags.findOne({ slug: slug })
+        .then(async tag => {
+
+            await PostsTags.find({ tag_id: tag.id })
+                .then(async postsTags => {
+
+                    let posts = [];
+                    for (let i = 0; i < postsTags.length; i++) {
+                        let post = await Posts.findOne({ id: postsTags[i].post_id });
+                        let author = await Users.findOne({ id: post.author_id });
+                        let meta = await PostsMeta.findOne({ post_id: post.id });
+                        posts.push({
+                            id: post.id,
+                            title: post.title,
+                            slug: post.slug,
+                            html: post.html,
+                            feature_image: post.feature_image,
+                            published_at: post.published_at
+                        });
+                    }
+
+                    res.status(200).json({
+                        status: 200,
+                        message: 'Posts retrieved successfully',
+                        data: {
+                            tag: tag,
+                            posts: {
+                                total: posts.length,
+                                posts: [
+                                    ...posts.map(post => ({
+                                        id: post.id,
+                                        title: post.title,
+                                        slug: post.slug,
+                                        feature_image: post.feature_image,
+                                        published_at: post.published_at
+                    
+                                    }))
+                                ]
+                            }
+                        }
+                    });
+
+                })
+                .catch(err => {
+                    res.status(400).json({
+                        status: 400,
+                        message: 'Error retrieving posts',
+                        error: err
+                    });
+                });
+
+        })
+        .catch(err => {
+            res.status(400).json({
+                status: 400,
+                message: 'Error retrieving tag',
+                error: err
+            });
+        });
 
 });
 

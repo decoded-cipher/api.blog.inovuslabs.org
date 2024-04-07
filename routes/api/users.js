@@ -94,9 +94,11 @@ router.get('/:slug', async (req, res) => {
 
     let slug = req.params.slug;
 
+    // Find user by slug
     await Users.findOne({ slug: slug })
         .then(async user => {
-            
+
+            // Find posts by author_id
             await PostsAuthors.find({ author_id: user.id })
                 .then(async postsAuthors => {
                     
