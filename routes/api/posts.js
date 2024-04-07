@@ -3,6 +3,13 @@ const express = require('express');
 const router = express.Router();
 
 const Posts = require('../../models/posts');
+const Users = require('../../models/users');
+const Tags = require('../../models/tags');
+
+const PostMeta = require('../../models/posts_meta');
+const PostsTags = require('../../models/posts_tags');
+const PostsAuthors = require('../../models/posts_authors');
+
 const verifyToken = require('../../middleware/authentication');
 
 
@@ -64,6 +71,134 @@ router.get('/', async (req, res) => {
             }
         }
     });
+
+});
+
+
+
+/**
+ * @route   GET /api/v1/posts/:slug
+ * @desc    Get a single post by slug
+ * @access  Public
+ * @params  slug
+ * @return  message, data
+ * @error   400, { error }
+ * @status  200, 400
+ * 
+ * @example /api/v1/posts/maladaptive-daydreaming
+**/
+
+router.get('/:slug', async (req, res) => {
+
+    let slug = req.params.slug;
+
+    // Find post by slug
+    await Posts.findOne({ slug: slug })
+        .then(async post => {
+
+            // Find post tags by post id
+            await PostsTags.findOne({ post_id: post.id })
+                .then(async postTags => {
+
+                    // Find tags by tag id
+                    await Tags.findOne({ id: postTags.tag_id })
+                        .then(async tag => {
+
+                            // Find post authors by post id
+                            await PostsAuthors.findOne({ post_id: post.id })
+                                .then(async postAuthors => {
+
+                                    // Find authors by author id
+                                    await Users.findOne({ id: postAuthors.author_id })
+                                        .then(author => {
+
+                                            res.status(200).json({
+                                                status: 200,
+                                                message: 'Post retrieved successfully',
+
+                                                data: {
+                                                    post: {
+                                                        id: post.id,
+                                                        uuid: post.uuid,
+                                                        title: post.title,
+                                                        slug: post.slug,
+                                                        html: post.html,
+                                                        feature_image: post.feature_image,
+                                                        featured: post.featured,
+                                                        type: post.type,
+                                                        status: post.status,
+                                                        visibility: post.visibility,
+                                                        created_at: post.created_at,
+                                                        updated_at: post.updated_at,
+                                                        published_at: post.published_at,
+                                                        custom_excerpt: post.custom_excerpt
+                                                    },
+                                                    tag: {
+                                                        id: tag.id,
+                                                        name: tag.name,
+                                                        slug: tag.slug,
+                                                        description: tag.description,
+                                                        feature_image: tag.feature_image,
+                                                        accent_color: tag.accent_color,
+
+                                                    },
+                                                    user: {
+                                                        id: author.id,
+                                                        name: author.name,
+                                                        email: author.email,
+                                                        avatar: author.avatar,
+                                                        slug: author.slug
+                                                    }
+                                                }
+
+                                            });
+
+                                        })
+                                        .catch(err => {
+                                            res.status(400).json({
+                                                status: 400,
+                                                message: 'Error retrieving authors',
+                                                error: err
+                                            });
+                                        });
+
+                                })
+                                .catch(err => {
+                                    res.status(400).json({
+                                        status: 400,
+                                        message: 'Error retrieving post authors',
+                                        error: err
+                                    });
+                                });
+
+
+
+                        })
+                        .catch(err => {
+                            res.status(400).json({
+                                status: 400,
+                                message: 'Error retrieving post tags',
+                                error: err
+                            });
+                        });
+
+                })
+                .catch(err => {
+                    res.status(400).json({
+                        status: 400,
+                        message: 'Error retrieving post tags',
+                        error: err
+                    });
+                });
+
+        })
+        .catch(err => {
+            res.status(400).json({
+                status: 400,
+                message: 'Error retrieving post',
+                error: err
+            });
+        });
 
 });
 
