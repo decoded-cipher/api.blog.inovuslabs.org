@@ -2,9 +2,18 @@
 const express = require('express');
 const router = express.Router();
 
-const PostsAuthors = require('../../models/posts_authors');
-const verifyToken = require('../../middleware/authentication');
+const PostsAuthors = require('../../../models/v1/posts_authors');
 
+
+
+
+router.get('/', async (req, res) => {
+    await PostsAuthors.find().then((tags) => {
+        res.status(200).json(tags);
+    }).catch((err) => {
+        res.status(400).json({ message: err });
+    });
+})
 
 
 

@@ -2,8 +2,7 @@
 const express = require('express');
 const router = express.Router();
 
-const PostsTags = require('../../models/posts_tags');
-const verifyToken = require('../../middleware/authentication');
+const PostsTags = require('../../../models/v1/posts_tags');
 
 
 

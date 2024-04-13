@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 const uuid = require('uuid');
 
-const PostAuthorSchema = new mongoose.Schema({
+const RoleSchema = new mongoose.Schema({
     id: {
         type: String,
         default: uuid.v4
@@ -21,6 +21,6 @@ const PostAuthorSchema = new mongoose.Schema({
         default: 0
     }
 
-}, { collection: 'posts_authors' });
+}, { collection: '_roles' });
 
-module.exports = mongoose.model('PostsAuthors', PostAuthorSchema);
+module.exports = mongoose.model('Roles', RoleSchema);

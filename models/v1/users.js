@@ -124,6 +124,6 @@ const UserSchema = new mongoose.Schema({
         default: null
     }
 
-}, { collection: 'users' });
+}, { collection: '_users' });
 
 module.exports = mongoose.model('Users', UserSchema);

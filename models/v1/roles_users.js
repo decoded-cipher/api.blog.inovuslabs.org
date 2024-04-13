@@ -3,24 +3,21 @@
 const mongoose = require('mongoose');
 const uuid = require('uuid');
 
-const RoleSchema = new mongoose.Schema({
+
+const RoleUsersSchema = new mongoose.Schema({
     id: {
         type: String,
         default: uuid.v4
     },
-    post_id: {
+    role_id: {
         type: String,
         required: true
     },
-    author_id: {
+    user_id: {
         type: String,
         required: true
-    },
-    sort_order: {
-        type: Number,
-        default: 0
     }
 
-}, { collection: 'roles' });
+}, { collection: '_roles_users' });
 
-module.exports = mongoose.model('Roles', RoleSchema);
+module.exports = mongoose.model('RolesUsers', RoleUsersSchema);

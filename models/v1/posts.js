@@ -1,13 +1,18 @@
 
+
 const mongoose = require('mongoose');
 const uuid = require('uuid');
 
-const TagsSchema = new mongoose.Schema({
+const PostSchema = new mongoose.Schema({
     id: {
         type: String,
         default: uuid.v4
     },
-    name: {
+    uuid: {
+        type: String,
+        default: uuid.v4
+    },
+    title: {
         type: String,
         required: true
     },
@@ -15,7 +20,23 @@ const TagsSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    description: {
+    mobiledoc: {
+        type: String,
+        required: false
+    },
+    lexical: {
+        type: String,
+        required: false
+    },
+    html: {
+        type: String,
+        required: false
+    },
+    comment_id: {
+        type: String,
+        required: false
+    },
+    plaintext: {
         type: String,
         required: false
     },
@@ -23,7 +44,19 @@ const TagsSchema = new mongoose.Schema({
         type: String,
         required: false
     },
-    parent_id: {
+    featured: {
+        type: Boolean,
+        required: false
+    },
+    type: {
+        type: String,
+        required: false
+    },
+    status: {
+        type: String,
+        required: false
+    },
+    locale: {
         type: String,
         required: false
     },
@@ -31,35 +64,23 @@ const TagsSchema = new mongoose.Schema({
         type: String,
         required: false
     },
-    og_image: {
+    email_recipient_filter: {
         type: String,
         required: false
     },
-    og_title: {
-        type: String,
-        required: false
+    created_at: {
+        type: Date,
+        default: Date.now
     },
-    og_description: {
-        type: String,
-        required: false
+    updated_at: {
+        type: Date,
+        default: Date.now
     },
-    twitter_image: {
-        type: String,
-        required: false
+    published_at: {
+        type: Date,
+        default: Date.now
     },
-    twitter_title: {
-        type: String,
-        required: false
-    },
-    twitter_description: {
-        type: String,
-        required: false
-    },
-    meta_title: {
-        type: String,
-        required: false
-    },
-    meta_description: {
+    custom_excerpt: {
         type: String,
         required: false
     },
@@ -71,23 +92,23 @@ const TagsSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    custom_template: {
+        type: String,
+        required: false
+    },
     canonical_url: {
         type: String,
         required: false
     },
-    accent_color: {
+    newsletter_id: {
         type: String,
         required: false
     },
-    created_at: {
-        type: Date,
-        default: Date.now
-    },
-    updated_at: {
-        type: Date,
-        default: Date.now
+    show_title_and_feature_image: {
+        type: Boolean,
+        required: false
     }
 
-}, { collection: 'tags' });
+}, { collection: '_posts' });
 
-module.exports = mongoose.model('Tags', TagsSchema);
+module.exports = mongoose.model('Posts', PostSchema);

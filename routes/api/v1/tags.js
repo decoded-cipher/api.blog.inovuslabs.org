@@ -2,15 +2,11 @@
 const express = require('express');
 const router = express.Router();
 
-const Tags = require('../../models/tags');
-const Posts = require('../../models/posts');
-const Users = require('../../models/users');
-const PostsTags = require('../../models/posts_tags');
-const PostsAuthors = require('../../models/posts_authors');
-const PostsMeta = require('../../models/posts_meta');
-
-
-const verifyToken = require('../../middleware/authentication');
+const Tags = require('../../../models/v1/tags');
+const Posts = require('../../../models/v1/posts');
+const Users = require('../../../models/v1/users');
+const PostsTags = require('../../../models/v1/posts_tags');
+const PostsMeta = require('../../../models/v1/posts_meta');
 
 
 

@@ -65,6 +65,6 @@ const PostMetaSchema = new mongoose.Schema({
         default: 0
     }
 
-}, { collection: 'posts_meta' });
+}, { collection: '_posts_meta' });
 
 module.exports = mongoose.model('PostsMeta', PostMetaSchema);

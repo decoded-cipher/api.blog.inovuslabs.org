@@ -2,15 +2,12 @@
 const express = require('express');
 const router = express.Router();
 
-const Posts = require('../../models/posts');
-const Users = require('../../models/users');
-const Tags = require('../../models/tags');
+const Posts = require('../../../models/v1/posts');
+const Users = require('../../../models/v1/users');
+const Tags = require('../../../models/v1/tags');
 
-const PostMeta = require('../../models/posts_meta');
-const PostsTags = require('../../models/posts_tags');
-const PostsAuthors = require('../../models/posts_authors');
-
-const verifyToken = require('../../middleware/authentication');
+const PostsTags = require('../../../models/v1/posts_tags');
+const PostsAuthors = require('../../../models/v1/posts_authors');
 
 
 
@@ -91,6 +88,59 @@ router.get('/', async (req, res) => {
     });
 
 });
+
+
+
+
+router.patch('/patch', async (req, res) => {
+
+    await Posts.find({}).then(posts => {
+        posts.forEach(post => {
+    
+            // let feature_image = post.feature_image;
+            
+            // if (feature_image && feature_image.includes('__GHOST_URL__') && feature_image !== null && feature_image !== 'null') {
+                
+            //     let newFeatureImage = feature_image.replace('__GHOST_URL__', "https://blog.inovuslabs.org");
+    
+            //     Posts.updateOne({ id: post.id }, {
+            //         $set: {
+            //             feature_image: newFeatureImage
+            //         }
+            //     }).then(() => {
+            //         console.log('Post updated successfully');
+            //     }).catch(err => {
+            //         console.log('Error updating post');
+            //     });
+            // }
+
+
+            // replace all __GHOST_URL__ with https://blog.inovuslabs.org in html.
+            
+            let html = post.html;
+
+            if (html && html.includes('__GHOST_URL__') && html !== null && html !== 'null') {
+                    
+                let newHtml = html.replace(/__GHOST_URL__/g, "https://blog.inovuslabs.org");
+
+                Posts.updateOne({ id: post.id }, {
+                    $set: {
+                        html: newHtml
+                    }
+                }).then(() => {
+                    console.log('Post updated successfully');
+                }).catch(err => {
+                    console.log('Error updating post');
+                });
+
+            }
+
+    
+        });
+    });
+
+});
+
 
 
 

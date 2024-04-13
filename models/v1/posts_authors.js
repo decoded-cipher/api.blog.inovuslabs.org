@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 const uuid = require('uuid');
 
-const PostsTagSchema = new mongoose.Schema({
+const PostAuthorSchema = new mongoose.Schema({
     id: {
         type: String,
         default: uuid.v4
@@ -12,7 +12,7 @@ const PostsTagSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    tag_id: {
+    author_id: {
         type: String,
         required: true
     },
@@ -21,6 +21,6 @@ const PostsTagSchema = new mongoose.Schema({
         default: 0
     }
 
-}, { collection: 'posts_tags' });
+}, { collection: '_posts_authors' });
 
-module.exports = mongoose.model('PostsTags', PostsTagSchema);
+module.exports = mongoose.model('PostsAuthors', PostAuthorSchema);
